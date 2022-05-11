@@ -13,7 +13,7 @@ const Cart = (props) => {
   );
 
   return (
-    <Modal>
+    <Modal onHideCart={props.onHideCart}>
       {/* отобраз элементы корзины */}
       {cartItems}
 
@@ -25,7 +25,9 @@ const Cart = (props) => {
 
       {/* для действий - кнопки*/}
       <div className={styles.actions}>
-        <button className={styles['button--alt']}>Закрыть</button>
+        <button className={styles['button--alt']} onClick={props.onHideCart}>
+          Закрыть
+        </button>
         <button className={styles.button}>Заказать</button>
       </div>
     </Modal>
