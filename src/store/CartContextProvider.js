@@ -9,11 +9,35 @@ const defaultCartState = {
 
 const cartReducer = (state, action) => {
   if (action.type === 'ADD_ITEM') {
-    const updatedItems = state.items.concat(action.item);
     const updatedTotalAmount =
       state.totalAmount + action.item.price * action.item.amount;
+
+    // проверка на наличие одинакового товара
+    const existingCartItemIndex = state.items.findIndex((item) => {
+      return item.id === action.item.id;
+    });
+
+    const existingCartItem = state.items[existingCartItemIndex];
+
+    let updateItem;
+    let updateItems;
+
+    if (existingCartItem) {
+      updateItem = {
+        ...existingCartItem,
+        amount: existingCartItem.amount + action.item.amount,
+      };
+      updateItems = [...state.items];
+      updateItems[existingCartItemIndex] = updateItem;
+    } else {
+      updateItem = {
+        ...action.item,
+      };
+      updateItems = state.items.concat(updateItem);
+    }
+
     return {
-      items: updatedItems,
+      items: updateItems,
       totalAmount: updatedTotalAmount,
     };
   }
