@@ -7,14 +7,18 @@ import CartItem from './CartItem';
 const Cart = (props) => {
   const cartContext = useContext(CartContext);
 
-  const totalAmount = `$${cartContext.totalAmount.toFixed(2)}`;
+  const totalAmount = `$${Math.abs(cartContext.totalAmount).toFixed(2)}`;
   // отображен кнопки при заказе
   const hasItems = cartContext.items.length > 0;
 
   // функции удаления и добавления элемента в корзине
-  const removeCartItemHandler = (id) => {};
+  const removeCartItemHandler = (id) => {
+    cartContext.removeItem(id);
+  };
 
-  const addCartItemHandler = (item) => {};
+  const addCartItemHandler = (item) => {
+    cartContext.addItem({ ...item, amount: 1 });
+  };
 
   // вспомогат переменн для элементов корзины - это массив из нескольк объектов
   const cartItems = (
