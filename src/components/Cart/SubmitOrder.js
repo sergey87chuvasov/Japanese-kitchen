@@ -39,7 +39,12 @@ const SubmitOrder = (props) => {
       return;
     }
 
-    // send data to server
+    // send data to server to cart.js
+    props.onSubmit({
+      name: enteredName,
+      city: enteredCity,
+      address: enteredAddress,
+    });
   };
 
   const nameInputClasses = `${styles.control} ${

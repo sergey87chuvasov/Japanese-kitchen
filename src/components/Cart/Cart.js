@@ -26,6 +26,21 @@ const Cart = (props) => {
     setIsSubmitOrderAvailable(true);
   };
 
+  // sendOrder
+  const submitOrderHandler = (userData) => {
+    fetch(
+      'https://react-course-http-28f8d-default-rtdb.firebaseio.com/orders.json',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          user: userData,
+          // get our meals
+          orderedMeals: cartContext.items,
+        }),
+      }
+    );
+  };
+
   // вспомогат переменн для элементов корзины - это массив из нескольк объектов
   const cartItems = (
     <ul className={styles['cart-items']}>
@@ -66,7 +81,12 @@ const Cart = (props) => {
         <span>{totalAmount}</span>
       </div>
 
-      {isSubmitOrderAvailable && <SubmitOrder onCancel={props.onHideCart} />}
+      {isSubmitOrderAvailable && (
+        <SubmitOrder
+          onSubmit={submitOrderHandler}
+          onCancel={props.onHideCart}
+        />
+      )}
       {!isSubmitOrderAvailable && modalButtons}
     </Modal>
   );
