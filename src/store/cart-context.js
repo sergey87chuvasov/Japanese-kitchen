@@ -6,6 +6,7 @@ const CartContext = React.createContext({
   // функции которые будут помогать обновлять этот контекст
   addItem: (item) => {},
   removeItem: (id) => {},
+  clearCart: () => {},
 });
 
 export default CartContext;

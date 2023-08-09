@@ -52,7 +52,7 @@ const cartReducer = (state, action) => {
 
     let updatedItems;
     if (existingCartItem.amount === 1) {
-      updatedItems = state.items.filter((item) => item.id != action.id);
+      updatedItems = state.items.filter((item) => item.id !== action.id);
     } else {
       const updateItem = {
         ...existingCartItem,
@@ -65,6 +65,10 @@ const cartReducer = (state, action) => {
       items: updatedItems,
       totalAmount: updatedTotalAmount,
     };
+  }
+
+  if (action.type === 'CLEAR_CART') {
+    return defaultCartState;
   }
 
   return defaultCartState;
@@ -90,12 +94,18 @@ const CartContextProvider = (props) => {
     });
   };
 
+  // clear cart
+  const clearCartHandler = () => {
+    dispatchCartAction({ type: 'CLEAR_CART' });
+  };
+
   // вся логика по управлению данными
   const cartContext = {
     items: cartState.items,
     totalAmount: cartState.totalAmount,
     addItem: addItemHandler,
     removeItem: removeItemHandler,
+    clearCart: clearCartHandler,
   };
 
   return (

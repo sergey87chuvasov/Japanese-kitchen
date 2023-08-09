@@ -4,9 +4,15 @@ import { useContext, useState } from 'react';
 import CartContext from '../../store/cart-context';
 import CartItem from './CartItem';
 import SubmitOrder from './SubmitOrder';
+import React from 'react';
 
 const Cart = (props) => {
   const [isSubmitOrderAvailable, setIsSubmitOrderAvailable] = useState(false);
+
+  const [isDataSubmitting, setIsDataSubmitting] = useState(false);
+  const [wasDataSendingSuccessful, setWasDataSendingSuccessful] =
+    useState(false);
+
   const cartContext = useContext(CartContext);
 
   const totalAmount = `$${Math.abs(cartContext.totalAmount).toFixed(2)}`;
@@ -27,8 +33,10 @@ const Cart = (props) => {
   };
 
   // sendOrder
-  const submitOrderHandler = (userData) => {
-    fetch(
+  const submitOrderHandler = async (userData) => {
+    setIsDataSubmitting(true);
+
+    await fetch(
       'https://react-course-http-28f8d-default-rtdb.firebaseio.com/orders.json',
       {
         method: 'POST',
@@ -39,6 +47,10 @@ const Cart = (props) => {
         }),
       }
     );
+
+    setIsDataSubmitting(false);
+    setWasDataSendingSuccessful(true);
+    cartContext.clearCart();
   };
 
   // вспомогат переменн для элементов корзины - это массив из нескольк объектов
@@ -70,8 +82,8 @@ const Cart = (props) => {
     </div>
   );
 
-  return (
-    <Modal onHideCart={props.onHideCart}>
+  const cartModalContent = (
+    <React.Fragment>
       {/* отобраз элементы корзины */}
       {cartItems}
 
@@ -88,6 +100,27 @@ const Cart = (props) => {
         />
       )}
       {!isSubmitOrderAvailable && modalButtons}
+    </React.Fragment>
+  );
+
+  const dataSubmittinCartModalContent = <p>Отправка данных заказа...</p>;
+
+  const dataWasSubmittedCartModalContent = (
+    <React.Fragment>
+      <p>Ваш заказ успешно отправлен!</p>
+      <div className={styles.actions}>
+        <button className={styles['button--alt']} onClick={props.onHideCart}>
+          Закрыть
+        </button>
+      </div>
+    </React.Fragment>
+  );
+
+  return (
+    <Modal onHideCart={props.onHideCart}>
+      {!isDataSubmitting && !wasDataSendingSuccessful && cartModalContent}
+      {isDataSubmitting && dataSubmittinCartModalContent}
+      {wasDataSendingSuccessful && dataWasSubmittedCartModalContent}
     </Modal>
   );
 };
